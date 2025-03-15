@@ -1,5 +1,11 @@
 package com.usuarios.users.Usuarios;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,51 +15,97 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table
-public class Usuario {
+@Table(name = "usuarios") // Especifica o nome exato da tabela existente
+public class Usuario implements UserDetails {
 
     @Id
     @SequenceGenerator(
-        name =  "users_sequence",
+        name = "users_sequence",
         sequenceName = "users_sequence",
         allocationSize = 1
     )
-    @GeneratedValue (
+    @GeneratedValue(
         strategy = GenerationType.SEQUENCE,
-        generator = "users_sequence"  
+        generator = "users_sequence"
     )
     private long id;
-    private String name;
     private String email;
-    private int age;
+    private String password;
+    private UsuarioRoles role;
 
-    public Usuario(String name, String email, int age){
-        this.name = name;
+    public Usuario(long id, String email,String password, UsuarioRoles role){
+        this.id = id;
         this.email = email;
-        this.age = age;
-    }
-    public Usuario(){}
 
-    public long getId(){
+        this.password = password;
+        this.role = role;
+    }
+    public Usuario(String email,String password, UsuarioRoles role){
+
+        this.email = email;
+
+        this.password = password;
+        this.role = role;
+    }
+
+    public Usuario() {}
+    
+    public long getId() {
         return this.id;
     }
-    public String getName(){
-        return this.name;    
-    }
-    public String getEmail(){
+
+
+
+    public String getEmail() {
         return this.email;
     }
-    public int getAge(){
-        return this.age;
-    }
 
-    public void setName(String name){
-        this.name = name;
-    }
-    public void setEmail(String email){
+
+
+
+    public void setEmail(String email) {
         this.email = email;
     }
-    public void setAge(int age){
-        this.age = age;
+
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.role == UsuarioRoles.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+       
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+       
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        
+        return true;
     }
 }
