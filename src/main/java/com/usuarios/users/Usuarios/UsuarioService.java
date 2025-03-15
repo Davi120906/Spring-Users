@@ -24,6 +24,11 @@ public class UsuarioService {
             throw new IllegalArgumentException("ERRO ESSE EMAIL JA ESTA CADASTRADO");
         }
         usuarioRepository.save(usuario);
-
+    }
+    public void deleteUser(long id){
+        if(!usuarioRepository.existsById(id)){
+            throw new IllegalArgumentException("ERROR THIS " + id + " DOES NOT EXIST");
+        }
+        usuarioRepository.deleteById(id);
     }
 }
