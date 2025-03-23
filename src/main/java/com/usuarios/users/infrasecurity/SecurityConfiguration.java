@@ -28,6 +28,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/cadastrar").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/products/register").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuario").hasRole("USER")
                         .anyRequest().authenticated()
             )
